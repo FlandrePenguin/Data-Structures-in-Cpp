@@ -3,6 +3,11 @@
 
 template <typename T>
 class Vector {
+	friend std::ostream& operator<< (std::ostream& os, const Vector<T> v) {
+		std::copy(v.begin(), v.end(), std::ostream_iterator<T>(os, " "));
+		return os;
+	}
+
 public:
 	explicit Vector(int initSize) : theSize{ initSize },
 		theCapacity{ initSize + SPARE_CAPACITY } {
@@ -42,7 +47,7 @@ public:
 
 	void resize(int newSize) {
 		if (newSize > theCapacity)
-			reverse(newSize * 2);
+			reserve(newSize * 2);
 		theSize = newSize;
 	}
 
