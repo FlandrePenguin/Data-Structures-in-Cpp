@@ -79,7 +79,9 @@ public:
 	List() { init(); }
 
 	~List() {
-
+		clear();
+		delete head;
+		delete tail;
 	}
 
 	List(const List& rhs) {
@@ -132,6 +134,38 @@ public:
 	void clear() {
 		while (!empty())
 			pop_front();
+	}
+
+	T& front() { return *begin(); }
+
+	const T& front() const { return *begin(); }
+
+	T& back() { return *--end(); }
+
+	const T& back() const { return *--end(); }
+
+	void push_front(const T& x) {
+		insert(begin(), x);
+	}
+
+	void push_front(T&& x) {
+		insert(begin(), std::move(x));
+	}
+
+	void push_back(const T& x) {
+		insert(end(), x);
+	}
+
+	void push_back(T&& x) {
+		insert(end(), std::move(x));
+	}
+
+	void pop_front() {
+		erase(begin());
+	}
+
+	void pop_back() {
+		erase(--end());
 	}
 
 	iterator insert(iterator itr, const T& x) {
