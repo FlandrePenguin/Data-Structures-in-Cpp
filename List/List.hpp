@@ -37,6 +37,7 @@ public:
 			return !(current == rhs.current);
 		}
 	protected:
+		const List<T>* theList;
 		Node* current;
 
 		T& retrieve() const {
@@ -77,6 +78,10 @@ public:
 
 	List() { init(); }
 
+	~List() {
+
+	}
+
 	List(const List& rhs) {
 		init();
 		for (auto& x : rhs) {
@@ -84,6 +89,79 @@ public:
 		}
 	}
 
+	List& operator=(const List& rhs) {
+		List copy = rhs;
+		std::swap(*this, copy);
+		return *this;
+	}
+
+	List(List&& rhs)
+		: theSize{ rhs.theSize }, head{ rhs.head }, tail{ rhs.tail } {
+		rhs.theSize = 0;
+		rhs.head = nullptr;
+		rhs.tail = nullptr;
+	}
+
+	List& operator(List&& rhs) {
+		std::swap(theSize, rhs.theSize);
+		std::swap(head, rhs.head);
+		std::swap(tail, rhs.tail);
+		return *this;
+	}
+
+	iterator begin() {
+		return{ head->next };
+	}
+
+	const_iterator begin() const {
+		return { head->next };
+	}
+
+	iterator end() {
+		return { tail };
+	}
+
+	const_iterator end() const {
+		return { tail };
+	}
+
+	int size() const { return theSize; }
+
+	bool empty() const { return theSize == 0; }
+
+	void clear() {
+		while (!empty())
+			pop_front();
+	}
+
+	iterator insert(iterator itr, const T& x) {
+		Node* p = itr.current;
+		theSize++;
+		return { p->prev = p->prev->next = new Node{x, p->prev, p} };
+	}
+
+	iterator insert(iterator itr, T&& x) {
+		Node* p = itr.current;
+		theSize++;
+		return{ p->prev = p->prev->next
+			= new Node{std::move(x), p->prev, p} };
+	}
+
+	iterator erase(iterator itr) {
+		Node* p = itr.current;
+		iterator retVal{ p->next };
+		p->prev->next = p->next;
+		p->next->prev = p->prev;
+		delete p;
+		theSize--;
+		return retVal;
+	}
+
+	iterator erase(iterator from, iterator to) {
+		for (iterator itr = from; itr != to;)
+			itr = erase(itr);
+		return to;
+	}
 
 private:
 	struct Node {
