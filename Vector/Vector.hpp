@@ -14,6 +14,10 @@ public:
 		objects = new T[theCapacity];
 	}
 
+	~Vector() {
+		delete[] objects;
+	}
+
 	Vector(const Vector& rhs) : theSize{ rhs.theSize },
 		theCapacity{ rhs.theCapacity }, objects{ nullptr } {
 		objects = new T[theCapacity];
@@ -25,10 +29,6 @@ public:
 		Vector copy = rhs;
 		std::swap(*this, copy);
 		return *this;
-	}
-
-	~Vector() {
-		delete[] objects;
 	}
 
 	Vector(Vector&& rhs) : theSize{ rhs.theSize },
