@@ -3,9 +3,27 @@
 
 template<typename T>
 class List {
-	friend std::ostream& operator<<(std::ostream& os, const List<T> l) {
+	friend std::ostream& operator<<(std::ostream& os, const List<T>& lst) {
+		for (auto itr = lst.begin(); itr != lst.end(); ++itr) {
+			if (itr != lst.begin())
+				os << " ";
+			os << *itr;
+		}
 		return os;
 	}
+
+private:
+	struct Node {
+		T data;
+		Node* prev;
+		Node* next;
+
+		Node(const T& d = T{}, Node* p = nullptr,
+			Node* n = nullptr) : data{ d }, prev{ p }, next{ n } {}
+
+		Node(T&& d, Node* p = nullptr,
+			Node* n = nullptr) : data{ std::move(d) }, prev{ p }, next{ n } {}
+	};
 
 public:
 	class const_iterator {
@@ -37,7 +55,6 @@ public:
 			return !(current == rhs.current);
 		}
 	protected:
-		const List<T>* theList;
 		Node* current;
 
 		T& retrieve() const {
@@ -62,7 +79,7 @@ public:
 		}
 
 		iterator& operator++() {
-			current = current->next;
+			this->current = this->current->next;
 			return *this;
 		}
 
@@ -76,6 +93,7 @@ public:
 		iterator(Node* p) : const_iterator(p) {}
 	};
 
+public:
 	List() { init(); }
 
 	~List() {
@@ -104,7 +122,7 @@ public:
 		rhs.tail = nullptr;
 	}
 
-	List& operator(List&& rhs) {
+	List& operator=(List&& rhs) {
 		std::swap(theSize, rhs.theSize);
 		std::swap(head, rhs.head);
 		std::swap(tail, rhs.tail);
@@ -198,18 +216,6 @@ public:
 	}
 
 private:
-	struct Node {
-		T data;
-		Node* prev;
-		Node* next;
-
-		Node(const T& d = T{}, Node* p = nullptr,
-			Node* n = nullptr) : data{ d }, prev{ p }, next{ n } {}
-
-		Node(T&& d, Node* p = nullptr,
-			Node* n = nullptr) : data{ std::move(d) }, prev{ p }, next{ n } {}
-	};
-
 	int theSize;
 	Node* head;
 	Node* tail;
@@ -219,6 +225,6 @@ private:
 		head = new Node;
 		tail = new Node;
 		head->next = tail;
-		tail->pre = head;
+		tail->prev = head;
 	}
 };
