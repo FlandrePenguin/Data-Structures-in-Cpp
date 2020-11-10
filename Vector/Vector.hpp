@@ -3,12 +3,8 @@
 
 template <typename T>
 class Vector {
-	friend std::ostream& operator<< (std::ostream& os, const Vector<T> v) {
-		for (auto itr = v.begin(); itr != v.end(); ++itr) {
-			if (itr != v.begin())
-				os << " ";
-			os << *itr;
-		}
+	friend std::ostream& operator<< (std::ostream& os, const Vector<T>& v) {
+		std::copy(v.begin(), v.end(), std::ostream_iterator<T>(os, " "));
 		return os;
 	}
 
