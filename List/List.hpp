@@ -4,16 +4,16 @@
 template<typename T>
 class List {
 	friend std::ostream& operator<<(std::ostream& os, const List<T>& lst) {
-		for (auto itr = lst.begin(); itr != lst.end(); ++itr) {
-			if (itr != lst.begin())
-				os << " ";
-			os << *itr;
-		}
+		std::copy(lst.begin(), lst.end(), std::ostream_iterator<Node>(os, " "));
 		return os;
 	}
 
 private:
 	struct Node {
+		friend std::ostream& operator<<(std::ostream& os, const Node& n) {
+			return { os << n.data };
+		}
+
 		T data;
 		Node* prev;
 		Node* next;
@@ -26,7 +26,7 @@ private:
 	};
 
 public:
-	class const_iterator {
+	class const_iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
 		friend class List<T>;
 
 	public:
