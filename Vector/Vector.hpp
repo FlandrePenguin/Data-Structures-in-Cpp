@@ -57,7 +57,7 @@ public:
 
 		T* newArray = new T[newCapacity];
 		for (int k = 0; k < theSize; ++k)
-			newArray[k] = std::move(objects[k]);
+			T[k] = std::move(objects[k]);
 
 		theCapacity = newCapacity;
 		std::swap(objects, newArray);
